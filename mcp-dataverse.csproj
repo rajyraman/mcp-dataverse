@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<RootNamespace>DataverseMcpServer.Tools</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AssemblyVersion>$([System.DateTime]::UtcNow.ToString('yyyy.MM.dd.1'))</AssemblyVersion>
+		<Description>MCP Server for Dataverse</Description>
+		<Title>mcp-dataverse</Title>
+		<Authors>Natraj Yegnaraman</Authors>
+		<PackageProjectUrl>https://github.com/rajyraman/mcp-dataverse</PackageProjectUrl>
+		<PackageVersion>$(AssemblyVersion)</PackageVersion>
+		<PackAsTool>true</PackAsTool>
+		<ToolCommandName>mcp-dataverse</ToolCommandName>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+	   <ContainerDevelopmentMode>Fast</ContainerDevelopmentMode>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.Identity" Version="1.14.0-beta.2" />
+		<PackageReference Include="MarkMpn.Sql4Cds.Engine" Version="9.6.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
+		<PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.3" />
+		<PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client.AzAuth" Version="1.1.11" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
+		<PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.4" />
+		<PackageReference Include="Serilog.Extensions.Logging" />
+        <PackageReference Include="Serilog.Extensions.Hosting" />
+		<PackageReference Include="Serilog.Sinks.Console" />
+		<PackageReference Include="Serilog.Sinks.Debug" />
+		<PackageReference Include="Serilog.Sinks.File" />
+	</ItemGroup>
+	<!--<ItemGroup>
+		<ContainerEnvironmentVariable Include="DATAVERSE_ENVIRONMENT_URL" />
+		<ContainerEnvironmentVariable Include="AZURE_CLIENT_ID" />
+		<ContainerEnvironmentVariable Include="AZURE_TENANT_ID" />
+		<ContainerEnvironmentVariable Include="AZURE_CLIENT_SECRET" />
+	</ItemGroup>-->
+	<PropertyGroup>
+		<EnableSdkContainerSupport>True</EnableSdkContainerSupport>
+		<ContainerBaseImage>mcr.microsoft.com/dotnet/runtime:8.0</ContainerBaseImage>
+		<ContainerRuntimeIdentifier>linux-x64</ContainerRuntimeIdentifier>
+		<ContainerRepository>mcp-dataverse</ContainerRepository>
+		<ContainerLicenseExpression>MIT</ContainerLicenseExpression>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>.</DockerfileContext>
+		<RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
+		<EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
+		<IsPublishable>True</IsPublishable>
+	</PropertyGroup>
+</Project>
