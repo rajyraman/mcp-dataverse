@@ -1,4 +1,5 @@
 ﻿using MarkMpn.Sql4Cds.Engine;
+using Microsoft.Crm.Sdk.Messages;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Data.Common;
@@ -11,38 +12,45 @@ namespace DataverseMcpServer.Tools;
 [McpServerToolType]
 public static class DataverseTool
 {
-    [McpServerTool, Description("Query for a specific table metadata in Dataverse without the fields.")]
-    public static async Task<string> GetDataverseTables(
+    [McpServerTool, Description("Get metadata for all tables in Dataverse.")]
+    public static async Task<string> GetMetadataForAllTables(
         Sql4CdsConnection sql4cdsConnection,
-        [Description("The table's logical name e.g. contact, account")] string tableName)
+        [Description(@"The metadata columns to retrieve e.g. [""metadataid"", ""logicalname""")] string[] metadataFieldNames,
+        [Description("Condition to filter down the table metadata e.g. isactivity = 1 AND islogicalentity = 1")] string? conditions)
     {
-        var result = await ExecuteSQL($"SELECT * FROM metadata.entity where logicalname = '{tableName}'", sql4cdsConnection);
+        var query = metadataFieldNames.Length > 0 ? $"SELECT {string.Join(",", metadataFieldNames)} FROM metadata.entity" : $"SELECT * FROM metadata.entity";
+        if (!string.IsNullOrEmpty(conditions))
+        {
+            query += $" WHERE ({conditions.ToLower()})";
+        }
+        var result = await ExecuteSQL(query, sql4cdsConnection);
         return result;
     }
 
-    [McpServerTool, Description("Query for a specific table metadata in Dataverse including the metadata for the fields.")]
-    public static async Task<string> GetDataverseTableWithFields(
+    [McpServerTool, Description("Get metadata for a specific table.")]
+    public static async Task<string> GetMetadataByTableName(
         Sql4CdsConnection sql4cdsConnection,
-        [Description("The table's logical name e.g. contact, account")] string tableName)
+        [Description("The table's logical name e.g. contact, account")] string tableName,
+        [Description(@"The metadata columns to retrieve e.g. [""metadataid"", ""logicalname""")] string[] metadataFieldNames)
     {
-        var query = $"""
-        SELECT 
-        entity.logicalname AS table_logicalname, entity.displayname AS table_displayname, entity.displaycollectionname AS table_displaycollectionname, 
-        entity.isactivity AS table_isactivityname, entity.iscustomentity AS table_iscustomentityname, 
-        entity.iscustomizable AS table_iscustomizable, entity.description AS table_description, entity.entitysetname AS table_entitysetname, 
-        entity.dayssincerecordlastmodified AS table_dayssincerecordlastmodified, entity.objecttypecode AS table_objecttypecode, 
-        entity.createdon AS table_createdon, entity.modifiedon AS table_modifiedon, entity.metadataid AS table_metadataid, 
-        entity.tabletype AS table_tabletype, entity.primaryidattribute AS table_primaryidattribute, entity.primarynameattribute AS table_primarynameattribute,
-        attribute.attributetypename AS attribute_attributetypename, attribute.columnnumber AS attribute_columnnumber, attribute.logicalname AS attribute_logicalname, 
-        attribute.displayname AS attribute_displayname, attribute.iscustomizable AS attribute_iscustomizable, attribute.iscustomattribute AS attribute_iscustomattribute, 
-        attribute.isauditenabled AS attribute_isauditenabled, attribute.islogical AS attribute_islogical, attribute.ismanaged AS attribute_ismanaged, 
-        attribute.isprimaryname AS attribute_isprimaryname, attribute.isprimaryid AS attribute_isprimaryid, attribute.isauditenabled AS attribute_isauditenabled, 
-        attribute.isretrievable AS attribute_isretrievable, attribute.isvalidforcreate AS attribute_isvalidforcreate, attribute.isvalidforread AS attribute_isvalidforread, 
-        attribute.isvalidforupdate AS attribute_isvalidforupdate
-        FROM metadata.entity
-        JOIN metadata.attribute ON entity.logicalname = attribute.entitylogicalname
-        WHERE entity.logicalname = '{tableName}'
-        """;
+        var query = metadataFieldNames.Length > 0 ? $"SELECT {string.Join(",", metadataFieldNames)} FROM metadata.entity" : $"SELECT * FROM metadata.entity";
+        var result = await ExecuteSQL($"{query} WHERE logicalname = '{tableName}'", sql4cdsConnection);
+        return result;
+    }
+
+    [McpServerTool, Description("Get metadata for fields in a specific table.")]
+    public static async Task<string> GetFieldMetadataByTableName(
+        Sql4CdsConnection sql4cdsConnection,
+        [Description("The table's logical name e.g. contact, account")] string tableName,
+        [Description(@"The metadata columns to retrieve e.g. [""metadataid"", ""isvalidforread""")] string[] metadataFieldNames,
+        [Description("Condition to filter down the attribute metadata e.g. isfilterable = 1 AND isvalidforupdate = 1")] string? conditions)
+    {
+        var query = metadataFieldNames.Length > 0 ? $"SELECT {string.Join(",", metadataFieldNames)} FROM metadata.attribute" : $"SELECT * FROM metadata.attribute";
+        query += $" WHERE attribute.entitylogicalname = '{tableName}'";
+        if (!string.IsNullOrEmpty(conditions))
+        {
+            query += $" AND ({conditions.ToLower()})";
+        }
         var result = await ExecuteSQL(query, sql4cdsConnection);
         return result;
     }
@@ -52,10 +60,20 @@ public static class DataverseTool
         Sql4CdsConnection sql4cdsConnection,
         [Description("The table's logical name e.g. contact, account")] string tableName,
         [Description(@"The field names to retrieve from the table e.g. [""contactid"", ""fullname""")] string[] fieldNames,
-        [Description("The sort order for the results e.g. fullname DESC. Defaults to modifiedon DESC)")] string sortOrder = "modifiedon DESC",
-        [Description("The number of rows to retrieve. Defaults to 500.")] int? rowCount= 500)
+        [Description("Condition to filter down the table")] string? conditions,
+        [Description("The sort order for the results e.g. fullname DESC.)")] string? sortOrder,
+        [Description("The number of rows to retrieve. Defaults to 50.")] int? rowCount = 50)
     {
-        var result = await ExecuteSQL($"SELECT TOP({rowCount}) {string.Join(",", fieldNames)} FROM dbo.{tableName} ORDER BY {sortOrder}", sql4cdsConnection);
+        var query = fieldNames.Length > 0 ? $"SELECT TOP({rowCount}) {string.Join(",", fieldNames)} FROM dbo.{tableName}" : $"SELECT TOP({rowCount}) * FROM dbo.{tableName}";
+        if (!string.IsNullOrEmpty(conditions))
+        {
+            query += $" WHERE ({conditions})";
+        }
+        if(!string.IsNullOrEmpty(sortOrder))
+        {
+            query += $" ORDER BY {sortOrder}";
+        }
+        var result = await ExecuteSQL(query, sql4cdsConnection);
         return result;
     }
 
@@ -77,6 +95,11 @@ public static class DataverseTool
             }
             table.Add(rows);
         }
-        return JsonSerializer.Serialize(table, options: new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        var result = JsonSerializer.Serialize(table, options: new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        return $"""
+            <json_output>
+                {result}
+            </json_output>
+            """; ;
     }
 }

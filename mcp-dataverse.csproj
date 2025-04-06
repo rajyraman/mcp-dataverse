@@ -22,15 +22,10 @@
 		<PackageReference Include="Azure.Identity" Version="1.14.0-beta.2" />
 		<PackageReference Include="MarkMpn.Sql4Cds.Engine" Version="9.6.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
-		<PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.3" />
-		<PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client.AzAuth" Version="1.1.11" />
+		<PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.5" />
+		<PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client.AzAuth" Version="1.1.13" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
-		<PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.4" />
-		<PackageReference Include="Serilog.Extensions.Logging" />
-        <PackageReference Include="Serilog.Extensions.Hosting" />
-		<PackageReference Include="Serilog.Sinks.Console" />
-		<PackageReference Include="Serilog.Sinks.Debug" />
-		<PackageReference Include="Serilog.Sinks.File" />
+		<PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.6" />
 	</ItemGroup>
 	<!--<ItemGroup>
 		<ContainerEnvironmentVariable Include="DATAVERSE_ENVIRONMENT_URL" />
@@ -49,5 +44,9 @@
 		<RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
 		<EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
 		<IsPublishable>True</IsPublishable>
+		<UserSecretsId>7d7cde92-177b-4878-bf78-6eaf0941f2e5</UserSecretsId>
 	</PropertyGroup>
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+	  <Exec Command="powershell -Command &quot;$processes = Get-Process -Name \&quot;mcp-dataverse\&quot; -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force }&quot;" IgnoreExitCode="true" />
+	</Target>
 </Project>
