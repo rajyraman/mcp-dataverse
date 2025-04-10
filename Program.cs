@@ -1,61 +1,66 @@
 ﻿using Azure.Identity;
+using DataverseMcpServer.Prompts;
+using DataverseMcpServer.Tools;
 using MarkMpn.Sql4Cds.Engine;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.PowerPlatform.Dataverse.Client;
-using ModelContextProtocol.Protocol.Types;
 using System.Diagnostics;
-using System.Net.Http.Headers;
 
-var builder = Host.CreateApplicationBuilder(args);
-builder.Logging.ClearProviders();
+//var builder = Host.CreateApplicationBuilder(args);
+//builder.Logging.SetMinimumLevel(LogLevel.Critical);
+//builder.Logging.ClearProviders();
+var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenLocalhost(3001);
+});
 builder.Services.AddMcpServer()
     .WithStdioServerTransport()
-    .WithToolsFromAssembly();
+    .WithPrompts<QueryPrompts>()
+    .WithTools<DataverseTool>();
 #if DEBUG
-if(!Debugger.IsAttached)
+if (!Debugger.IsAttached)
 {
     Debugger.Launch();
 }
 #endif
-
-try
+var credentialOptions = new DefaultAzureCredentialOptions
 {
-    builder.Services.AddSingleton(_ =>
-    {
-        var credentialOptions = new DefaultAzureCredentialOptions
-        {
-            ExcludeWorkloadIdentityCredential = true,
-            ExcludeAzurePowerShellCredential = true,
-            ExcludeAzureDeveloperCliCredential = true,
-            ExcludeSharedTokenCacheCredential = true,
-            ExcludeManagedIdentityCredential = true,
-        };
-        if (Environment.GetEnvironmentVariable("DOCKER_CONTAINER") == bool.TrueString)
-        {
-            credentialOptions = new DefaultAzureCredentialOptions
-            {
-                ExcludeWorkloadIdentityCredential = true,
-                ExcludeAzurePowerShellCredential = true,
-                ExcludeAzureDeveloperCliCredential = true,
-                ExcludeSharedTokenCacheCredential = true,
-                ExcludeInteractiveBrowserCredential = true,
-                ExcludeVisualStudioCodeCredential = true,
-                ExcludeAzureCliCredential = true,
-                ExcludeManagedIdentityCredential = true,
-                ExcludeVisualStudioCredential = true,
-            };
-        }
-        var dataverseClient = AzAuth.CreateServiceClient(Environment.GetEnvironmentVariable("DATAVERSE_ENVIRONMENT_URL") ?? args[1], credentialOptions: credentialOptions);
-        var sql4cdsConnection = new Sql4CdsConnection(dataverseClient) { UseLocalTimeZone = true };
-        return sql4cdsConnection;
-    });
-
-    await builder.Build().RunAsync();
-}
-catch (Exception ex)
+    ExcludeWorkloadIdentityCredential = true,
+    ExcludeAzurePowerShellCredential = true,
+    ExcludeAzureDeveloperCliCredential = true,
+    ExcludeSharedTokenCacheCredential = true,
+    ExcludeManagedIdentityCredential = true,
+    ExcludeEnvironmentCredential = true,
+};
+if (Environment.GetEnvironmentVariable("DOCKER_CONTAINER") == bool.TrueString)
 {
-    throw;
+    credentialOptions.ExcludeInteractiveBrowserCredential = true;
+    credentialOptions.ExcludeVisualStudioCodeCredential = true;
+    credentialOptions.ExcludeAzureCliCredential = true;
+    credentialOptions.ExcludeVisualStudioCredential = true;
 }
+
+builder.Services.AddSingleton(serviceProvider =>
+{
+    var dataverseClient = AzAuth.CreateServiceClient(
+        Environment.GetEnvironmentVariable("DATAVERSE_ENVIRONMENT_URL") ?? args[1],
+        credentialOptions: credentialOptions
+    );
+    return dataverseClient;
+});
+
+builder.Services.AddSingleton(serviceProvider =>
+{
+    var dataverseClient = serviceProvider.GetRequiredService<ServiceClient>();
+    return new Sql4CdsConnection(dataverseClient) { UseLocalTimeZone = true };
+});
+
+//await builder.Build().RunAsync();
+var app = builder.Build();
+app.MapMcp();
+app.Run();

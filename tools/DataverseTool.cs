@@ -1,5 +1,6 @@
 ﻿using MarkMpn.Sql4Cds.Engine;
 using Microsoft.Crm.Sdk.Messages;
+using Microsoft.PowerPlatform.Dataverse.Client;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Data.Common;
@@ -10,7 +11,7 @@ using System.Text.Json;
 namespace DataverseMcpServer.Tools;
 
 [McpServerToolType]
-public static class DataverseTool
+public sealed class DataverseTool
 {
     [McpServerTool, Description("Get metadata for all tables in Dataverse.")]
     public static async Task<string> GetMetadataForAllTables(
@@ -69,7 +70,7 @@ public static class DataverseTool
         {
             query += $" WHERE ({conditions})";
         }
-        if(!string.IsNullOrEmpty(sortOrder))
+        if (!string.IsNullOrEmpty(sortOrder))
         {
             query += $" ORDER BY {sortOrder}";
         }
@@ -77,6 +78,32 @@ public static class DataverseTool
         return result;
     }
 
+    [McpServerTool, Description("Executes an SQL query.")]
+    public static async Task<string> ExecuteSQL(
+        Sql4CdsConnection sql4cdsConnection,
+        [Description("The SQL query to execute. Must be only SELECT.")] string sqlQuery)
+    {
+        if (!sqlQuery.TrimStart().StartsWith("SELECT", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("Only SELECT statements are allowed.");
+        }
+        var result = await ExecuteSQL(sqlQuery, sql4cdsConnection);
+        return result;
+    }
+
+    [McpServerTool, Description("Convert FetchXml query to SQL query.")]
+    public static async Task<string> ConvertFetchXmlToSql(
+        Sql4CdsConnection sql4cdsConnection,
+        [Description("FetchXml query")] string fetchXml)
+    {
+        var query = $@"
+            DECLARE @Response AS NVARCHAR(MAX);
+            EXECUTE FetchXMLToSQL @FetchXml = '{fetchXml}', @Response = @Response OUTPUT;
+            SELECT @Response AS Response;
+        ";
+        var result = await ExecuteSQL(query, sql4cdsConnection);
+        return result;
+    }
     private static async Task<string> ExecuteSQL(string query, Sql4CdsConnection sql4cdsConnection)
     {
         var cmd = sql4cdsConnection.CreateCommand();

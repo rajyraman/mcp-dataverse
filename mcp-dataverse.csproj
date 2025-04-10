@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<RootNamespace>DataverseMcpServer.Tools</RootNamespace>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -19,13 +19,14 @@
 	   <ContainerDevelopmentMode>Fast</ContainerDevelopmentMode>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.14.0-beta.2" />
+		<PackageReference Include="Azure.Identity" Version="1.13.2" />
 		<PackageReference Include="MarkMpn.Sql4Cds.Engine" Version="9.6.0" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
 		<PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.2.5" />
 		<PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client.AzAuth" Version="1.1.13" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
-		<PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.6" />
+		<PackageReference Include="ModelContextProtocol" Version="0.1.0-preview.7" />
+		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.1.0-preview.7" />
 	</ItemGroup>
 	<!--<ItemGroup>
 		<ContainerEnvironmentVariable Include="DATAVERSE_ENVIRONMENT_URL" />
@@ -35,7 +36,7 @@
 	</ItemGroup>-->
 	<PropertyGroup>
 		<EnableSdkContainerSupport>True</EnableSdkContainerSupport>
-		<ContainerBaseImage>mcr.microsoft.com/dotnet/runtime:8.0</ContainerBaseImage>
+		<ContainerBaseImage>mcr.microsoft.com/dotnet/runtime:9.0</ContainerBaseImage>
 		<ContainerRuntimeIdentifier>linux-x64</ContainerRuntimeIdentifier>
 		<ContainerRepository>mcp-dataverse</ContainerRepository>
 		<ContainerLicenseExpression>MIT</ContainerLicenseExpression>
