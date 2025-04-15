@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "mcp-dataverse": {
+    "Executable": {
       "commandName": "Project"
     },
     "Container (Dockerfile)": {

@@ -2,7 +2,7 @@
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 
-namespace DataverseMcpServer.Prompts;
+namespace DataverseMcpServer.Core.Prompts;
 [McpServerPromptType]
 public class QueryPrompts
 {

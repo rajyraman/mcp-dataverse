@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+		<RootNamespace>Mcp.Dataverse.SSE</RootNamespace>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AssemblyVersion>$([System.DateTime]::UtcNow.ToString('yyyy.MM.dd.1'))</AssemblyVersion>
+		<Description>MCP SSE Server for Dataverse</Description>
+		<Title>mcp-sse-dataverse</Title>
+		<Authors>Natraj Yegnaraman</Authors>
+		<PackageProjectUrl>https://github.com/rajyraman/mcp-dataverse</PackageProjectUrl>
+		<PackageVersion>$(AssemblyVersion)</PackageVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="Mcp.Dataverse.Core\**" />
+		<Compile Remove="Mcp.Dataverse.Stdio\**" />
+		<EmbeddedResource Remove="Mcp.Dataverse.Core\**" />
+		<EmbeddedResource Remove="Mcp.Dataverse.Stdio\**" />
+		<None Remove="Mcp.Dataverse.Core\**" />
+		<None Remove="Mcp.Dataverse.Stdio\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
+		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.1.0-preview.8" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Mcp.Dataverse.Core\Mcp.Dataverse.Core.csproj" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
+		<ContainerDevelopmentMode>Fast</ContainerDevelopmentMode>
+	</PropertyGroup>
+	<ItemGroup>
+		<ContainerEnvironmentVariable Include="DATAVERSE_ENVIRONMENT_URL" />
+		<ContainerEnvironmentVariable Include="AZURE_CLIENT_ID" />
+		<ContainerEnvironmentVariable Include="AZURE_TENANT_ID" />
+		<ContainerEnvironmentVariable Include="AZURE_CLIENT_SECRET" />
+		<ContainerEnvironmentVariable Include="DOCKER_CONTAINER" Value="true" />
+		<ContainerPort Include="3001" Type="tcp" />
+	</ItemGroup>
+	<PropertyGroup>
+		<EnableSdkContainerSupport>True</EnableSdkContainerSupport>
+		<ContainerRepository>rajyraman/mcp-sse-dataverse</ContainerRepository>
+		<ContainerLicenseExpression>MIT</ContainerLicenseExpression>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerfileContext>..\..</DockerfileContext>
+		<RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
+		<EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
+		<IsPublishable>True</IsPublishable>
+		<ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:9.0</ContainerBaseImage>
+		<ContainerRuntimeIdentifier>linux-x64</ContainerRuntimeIdentifier>
+	</PropertyGroup>
+	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="powershell -Command &quot;$processes = Get-Process -Name \&quot;mcp.dataverse.sse\&quot; -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force }&quot;" IgnoreExitCode="true" />
+	</Target>
+
+</Project>

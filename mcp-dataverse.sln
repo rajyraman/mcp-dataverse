@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mcp-dataverse", "mcp-dataverse.csproj", "{3326656E-AAE2-4146-A71B-FB0F6A95C3E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcp.Dataverse.Core", "src\Mcp.Dataverse.Core\Mcp.Dataverse.Core.csproj", "{3A30DDEC-576D-0F70-F123-2FBD3FC18083}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcp.Dataverse.Stdio", "src\Mcp.Dataverse.Stdio\Mcp.Dataverse.Stdio.csproj", "{3AF34B5C-E15B-8201-3275-9C20289A9A40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mcp.Dataverse.SSE", "src\Mcp.Dataverse.SSE\Mcp.Dataverse.SSE.csproj", "{2D343055-F23A-8C81-4ADB-8F2D1718935D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3326656E-AAE2-4146-A71B-FB0F6A95C3E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3326656E-AAE2-4146-A71B-FB0F6A95C3E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3326656E-AAE2-4146-A71B-FB0F6A95C3E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3326656E-AAE2-4146-A71B-FB0F6A95C3E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A30DDEC-576D-0F70-F123-2FBD3FC18083}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A30DDEC-576D-0F70-F123-2FBD3FC18083}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A30DDEC-576D-0F70-F123-2FBD3FC18083}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A30DDEC-576D-0F70-F123-2FBD3FC18083}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AF34B5C-E15B-8201-3275-9C20289A9A40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AF34B5C-E15B-8201-3275-9C20289A9A40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AF34B5C-E15B-8201-3275-9C20289A9A40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AF34B5C-E15B-8201-3275-9C20289A9A40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D343055-F23A-8C81-4ADB-8F2D1718935D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D343055-F23A-8C81-4ADB-8F2D1718935D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D343055-F23A-8C81-4ADB-8F2D1718935D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D343055-F23A-8C81-4ADB-8F2D1718935D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

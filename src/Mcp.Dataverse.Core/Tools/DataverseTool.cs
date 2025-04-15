@@ -1,14 +1,16 @@
 ﻿using MarkMpn.Sql4Cds.Engine;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.PowerPlatform.Dataverse.Client;
+using ModelContextProtocol;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Data.Common;
 using System.Drawing;
 using System.Net.Http.Json;
+using System.ServiceModel.Channels;
 using System.Text.Json;
 
-namespace DataverseMcpServer.Tools;
+namespace DataverseMcpServer.Core.Tools;
 
 [McpServerToolType]
 public sealed class DataverseTool
@@ -118,7 +120,7 @@ public sealed class DataverseTool
             {
                 if (i == 0)
                     rows["#"] = rowCount++;
-                rows[reader.GetName(i)] = reader.GetValue(i);
+                rows[reader.GetName(i) ?? $"column_{i+1}"] = reader.GetValue(i);
             }
             table.Add(rows);
         }
