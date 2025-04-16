@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.AI;
+﻿using Mcp.Dataverse.Core.Properties;
+using Microsoft.Extensions.AI;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
+using System.Text;
 
 namespace DataverseMcpServer.Core.Prompts;
 [McpServerPromptType]

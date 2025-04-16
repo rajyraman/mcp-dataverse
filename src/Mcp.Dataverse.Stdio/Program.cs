@@ -12,5 +12,6 @@ builder.AddDataverse();
 builder.Services.AddMcpServer()
     .WithStdioServerTransport()
     .WithPrompts<QueryPrompts>()
+    .WithPrompts<DataversePrompts>()
     .WithTools<DataverseTool>();
 await builder.Build().RunAsync();

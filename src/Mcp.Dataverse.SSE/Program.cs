@@ -15,6 +15,7 @@ builder.WebHost.ConfigureKestrel(options =>
 builder.AddDataverse();
 builder.Services.AddMcpServer()
     .WithPrompts<QueryPrompts>()
+    .WithPrompts<DataversePrompts>()
     .WithTools<DataverseTool>();
 var app = builder.Build();
 app.MapMcp();
