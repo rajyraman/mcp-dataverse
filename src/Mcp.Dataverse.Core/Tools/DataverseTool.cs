@@ -108,27 +108,38 @@ public sealed class DataverseTool
     }
     private static async Task<string> ExecuteSQL(string query, Sql4CdsConnection sql4cdsConnection)
     {
-        var cmd = sql4cdsConnection.CreateCommand();
+        using Sql4CdsCommand cmd = sql4cdsConnection.CreateCommand() ;
         cmd.CommandText = query;
         var table = new List<Dictionary<string, object>>();
-        var reader = await cmd.ExecuteReaderAsync();
-        int rowCount = 1;
-        while (await reader.ReadAsync())
+        try
         {
-            var rows = new Dictionary<string, object>();
-            for (var i = 0; i < reader.FieldCount; i++)
+            var reader = await cmd.ExecuteReaderAsync();
+            int rowCount = 1;
+            while (await reader.ReadAsync())
             {
-                if (i == 0)
-                    rows["#"] = rowCount++;
-                rows[reader.GetName(i) ?? $"column_{i+1}"] = reader.GetValue(i);
+                var rows = new Dictionary<string, object>();
+                for (var i = 0; i < reader.FieldCount; i++)
+                {
+                    if (i == 0)
+                        rows["#"] = rowCount++;
+                    rows[reader.GetName(i) ?? $"column_{i + 1}"] = reader.GetValue(i);
+                }
+                table.Add(rows);
             }
-            table.Add(rows);
-        }
-        var result = JsonSerializer.Serialize(table, options: new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-        return $"""
+            var result = JsonSerializer.Serialize(table, options: new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return $"""
             <json_output>
                 {result}
             </json_output>
-            """; ;
+            """;
+        }
+        catch (Sql4CdsException ex)
+        {
+            return $"""
+            <error>
+                {ex.Message}
+            </error>
+            """;
+        }
     }
 }
