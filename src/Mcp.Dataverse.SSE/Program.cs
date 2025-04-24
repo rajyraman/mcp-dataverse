@@ -13,6 +13,7 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 builder.AddDataverse();
+builder.Services.AddMemoryCache();
 builder.Services.AddMcpServer()
     .WithPrompts<QueryPrompts>()
     .WithPrompts<DataversePrompts>()

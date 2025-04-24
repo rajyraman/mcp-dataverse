@@ -1,5 +1,8 @@
-﻿using MarkMpn.Sql4Cds.Engine;
+﻿using Azure.Core;
+using MarkMpn.Sql4Cds.Engine;
+using MarkMpn.Sql4Cds.Engine.FetchXml;
 using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.PowerPlatform.Dataverse.Client;
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
@@ -15,39 +18,55 @@ namespace DataverseMcpServer.Core.Tools;
 [McpServerToolType]
 public sealed class DataverseTool
 {
+    private static readonly TimeSpan _defaultCachingDuration = TimeSpan.FromMinutes(2);
+
     [McpServerTool, Description("Get metadata for all tables in Dataverse.")]
     public static async Task<string> GetMetadataForAllTables(
         Sql4CdsConnection sql4cdsConnection,
+        IMemoryCache cache,
         [Description(@"The metadata columns to retrieve e.g. [""metadataid"", ""logicalname""")] string[] metadataFieldNames,
         [Description("Condition to filter down the table metadata e.g. isactivity = 1 AND islogicalentity = 1")] string? conditions)
     {
+        var cacheKey = $"GetMetadataForAllTables_{string.Join(",", metadataFieldNames)}_{conditions}";
+        if (cache.TryGetValue(cacheKey, out string? cachedResult)) return cachedResult!;
+
         var query = metadataFieldNames.Length > 0 ? $"SELECT {string.Join(",", metadataFieldNames)} FROM metadata.entity" : $"SELECT * FROM metadata.entity";
         if (!string.IsNullOrEmpty(conditions))
         {
             query += $" WHERE ({conditions.ToLower()})";
         }
         var result = await ExecuteSQL(query, sql4cdsConnection);
+        cache.Set(cacheKey, result, _defaultCachingDuration);
         return result;
     }
 
     [McpServerTool, Description("Get metadata for a specific table.")]
     public static async Task<string> GetMetadataByTableName(
         Sql4CdsConnection sql4cdsConnection,
+        IMemoryCache cache,
         [Description("The table's logical name e.g. contact, account")] string tableName,
         [Description(@"The metadata columns to retrieve e.g. [""metadataid"", ""logicalname""")] string[] metadataFieldNames)
     {
+        var cacheKey = $"GetMetadataByTableName_{tableName}_{string.Join(",", metadataFieldNames)}";
+        if (cache.TryGetValue(cacheKey, out string? cachedResult)) return cachedResult!;
+
         var query = metadataFieldNames.Length > 0 ? $"SELECT {string.Join(",", metadataFieldNames)} FROM metadata.entity" : $"SELECT * FROM metadata.entity";
         var result = await ExecuteSQL($"{query} WHERE logicalname = '{tableName}'", sql4cdsConnection);
+        cache.Set(cacheKey, result, _defaultCachingDuration);
         return result;
     }
 
     [McpServerTool, Description("Get metadata for fields in a specific table.")]
     public static async Task<string> GetFieldMetadataByTableName(
         Sql4CdsConnection sql4cdsConnection,
+        IMemoryCache cache,
         [Description("The table's logical name e.g. contact, account")] string tableName,
         [Description(@"The metadata columns to retrieve e.g. [""metadataid"", ""isvalidforread""")] string[] metadataFieldNames,
         [Description("Condition to filter down the attribute metadata e.g. isfilterable = 1 AND isvalidforupdate = 1")] string? conditions)
     {
+        var cacheKey = $"GetFieldMetadataByTableName_{tableName}_{string.Join(",", metadataFieldNames)}_{conditions}";
+        if (cache.TryGetValue(cacheKey, out string? cachedResult)) return cachedResult!;
+
         var query = metadataFieldNames.Length > 0 ? $"SELECT {string.Join(",", metadataFieldNames)} FROM metadata.attribute" : $"SELECT * FROM metadata.attribute";
         query += $" WHERE attribute.entitylogicalname = '{tableName}'";
         if (!string.IsNullOrEmpty(conditions))
@@ -55,6 +74,7 @@ public sealed class DataverseTool
             query += $" AND ({conditions.ToLower()})";
         }
         var result = await ExecuteSQL(query, sql4cdsConnection);
+        cache.Set(cacheKey, result, _defaultCachingDuration);
         return result;
     }
 
@@ -98,12 +118,7 @@ public sealed class DataverseTool
         Sql4CdsConnection sql4cdsConnection,
         [Description("FetchXml query")] string fetchXml)
     {
-        var query = $@"
-            DECLARE @Response AS NVARCHAR(MAX);
-            EXECUTE FetchXMLToSQL @FetchXml = '{fetchXml}', @Response = @Response OUTPUT;
-            SELECT @Response AS Response;
-        ";
-        var result = await ExecuteSQL(query, sql4cdsConnection);
+        var result = await ExecuteSQL($"SELECT Response FROM FetchXMLToSQL('{fetchXml}',0)", sql4cdsConnection);
         return result;
     }
     private static async Task<string> ExecuteSQL(string query, Sql4CdsConnection sql4cdsConnection)
@@ -128,12 +143,23 @@ public sealed class DataverseTool
             }
             var result = JsonSerializer.Serialize(table, options: new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
             return $"""
+            <environment>
+                https://{sql4cdsConnection.DataSource}
+            </environment>
             <json_output>
                 {result}
             </json_output>
             """;
         }
         catch (Sql4CdsException ex)
+        {
+            return $"""
+            <error>
+                {ex.Message}
+            </error>
+            """;
+        }
+        catch (Exception ex)
         {
             return $"""
             <error>
