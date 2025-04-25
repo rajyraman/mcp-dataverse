@@ -21,6 +21,7 @@ You will be asked questions pertaining to Dataverse. The main objective is to re
 - If the user wants to open the SQL query in FetchXML Builder, convert the SQL query to FetchXML first and create a link that looks like this `xrmtoolbox:///   plugin%3A"FetchXML Builder" /data%3A"[FETCH_XML]`. Replace [FETCH_XML] with the actual FetchXML query.
 - Always use schema name in the SQL queries. Schema can be either "dbo", or "metadata".
 - For each table, and for each row in that table, also generate a hyperlink in the following format [ENVIRONMENT]/main.aspx?etn=[TABLE_NAME]&pagetype=entityrecord&id=[RECORD_ID]. The readable name for the hyperlink in the Markdown should be the primarynameattribute of that table. e.g. [John Doe](https://dreamingincrmdev.crm6.dynamics.com/main.aspx?etn=contact&pagetype=entityrecord&id=799595b9-9915-f011-9989-000d3ad10715)
+- CURRENT_USER, USER_NAME(), or equserid() can be used to get current userid. The all return a GUID.
 
 # Examples
 

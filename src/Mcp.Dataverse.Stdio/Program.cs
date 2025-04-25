@@ -8,6 +8,7 @@ using System.Diagnostics;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Logging.SetMinimumLevel(LogLevel.None);
+
 builder.AddDataverse();
 builder.Services.AddMemoryCache();
 builder.Services.AddMcpServer()

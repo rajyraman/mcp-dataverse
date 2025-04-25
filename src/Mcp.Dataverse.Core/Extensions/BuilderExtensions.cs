@@ -32,16 +32,16 @@ public static class BuilderExtensions
         {
             ExcludeWorkloadIdentityCredential = true,
             ExcludeManagedIdentityCredential = true,
-            TenantId = tenantId,
-            ExcludeInteractiveBrowserCredential = true
+            ExcludeEnvironmentCredential = true,
+            ExcludeAzurePowerShellCredential = true,
+            ExcludeAzureDeveloperCliCredential = true,
+            ExcludeVisualStudioCredential = true
         };
         if (isContainer)
         {
-            credentialOptions.ExcludeAzurePowerShellCredential = true;
-            credentialOptions.ExcludeAzureDeveloperCliCredential = true;
+            credentialOptions.ExcludeInteractiveBrowserCredential = true;
             credentialOptions.ExcludeAzureCliCredential = true;
-            credentialOptions.ExcludeVisualStudioCodeCredential = true;
-            credentialOptions.ExcludeVisualStudioCredential = true;
+            credentialOptions.ExcludeEnvironmentCredential = false;
         }
 
         builder.Services.AddSingleton(serviceProvider =>
@@ -49,6 +49,7 @@ public static class BuilderExtensions
             var dataverseClient = AzAuth.CreateServiceClient(
                 environmentUrl,
                 credentialOptions: credentialOptions
+                //logger: logger
             );
             dataverseClient.EnableAffinityCookie = false;
             return dataverseClient;
