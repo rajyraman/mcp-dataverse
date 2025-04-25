@@ -32,7 +32,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Publish to Docker Hub
-      run: dotnet publish ./src/Mcp.Dataverse.Stdio -c Release /t:PublishContainer --verbosity detailed
+      run: dotnet publish ./src/Mcp.Dataverse.Stdio -c Release /t:PublishContainer --verbosity normal
       env:
         DOCKER_REGISTRY: docker.io
 
