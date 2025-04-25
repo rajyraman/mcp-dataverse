@@ -1,61 +1,68 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<TargetFramework>net9.0</TargetFramework>
-		<RootNamespace>Mcp.Dataverse.Stdio</RootNamespace>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<AssemblyVersion>$([System.DateTime]::UtcNow.ToString('yyyy.MM.dd.2'))</AssemblyVersion>
-		<Title>mcp-studio-dataverse</Title>
-		<Authors>Natraj Yegnaraman</Authors>
-		<PackageProjectUrl>https://github.com/rajyraman/mcp-dataverse</PackageProjectUrl>
-		<PackageVersion>$(AssemblyVersion)</PackageVersion>
-		<PackAsTool>true</PackAsTool>
-		<ToolCommandName>mcp-dataverse</ToolCommandName>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
-		<ContainerDevelopmentMode>Fast</ContainerDevelopmentMode>
-	</PropertyGroup>
-	<ItemGroup>
-		<ContainerEnvironmentVariable Include="DATAVERSE_ENVIRONMENT_URL" />
-		<ContainerEnvironmentVariable Include="AZURE_CLIENT_ID" />
-		<ContainerEnvironmentVariable Include="AZURE_TENANT_ID" />
-		<ContainerEnvironmentVariable Include="AZURE_CLIENT_SECRET" />
-		<ContainerEnvironmentVariable Include="DOCKER_CONTAINER" Value="true" />
-	</ItemGroup>
-	<PropertyGroup>
-		<EnableSdkContainerSupport>True</EnableSdkContainerSupport>
-		<ContainerRepository>rajyraman/mcp-stdio-dataverse</ContainerRepository>
-		<ContainerLicenseExpression>MIT</ContainerLicenseExpression>
-		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-		<DockerfileContext>..\..</DockerfileContext>
-		<RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
-		<EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
-		<IsPublishable>True</IsPublishable>
-		<ContainerBaseImage>mcr.microsoft.com/dotnet/runtime:9.0</ContainerBaseImage>
-		<ContainerRuntimeIdentifier>linux-x64</ContainerRuntimeIdentifier>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<FileVersion>$(AssemblyVersion)</FileVersion>
-		<Version>$(AssemblyVersion)</Version>
-	</PropertyGroup>
-	<ItemGroup>
-	  <None Include="..\..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Mcp.Dataverse.Core\Mcp.Dataverse.Core.csproj" />
-	</ItemGroup>
-	
-	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="powershell -Command &quot;$processes = Get-Process -Name \&quot;mcp.dataverse.stdio\&quot; -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force }&quot;" IgnoreExitCode="true" />
-	</Target>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>Mcp.Dataverse.Stdio</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyVersion>$([System.DateTime]::UtcNow.ToString('yyyy.MM.dd.1'))</AssemblyVersion>
+    <Title>mcp-studio-dataverse</Title>
+    <Authors>Natraj Yegnaraman</Authors>
+    <PackageProjectUrl>https://github.com/rajyraman/mcp-dataverse</PackageProjectUrl>
+    <PackageVersion>$(AssemblyVersion)</PackageVersion>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>mcp-dataverse</ToolCommandName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <ContainerDevelopmentMode>Fast</ContainerDevelopmentMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <ContainerEnvironmentVariable Include="DATAVERSE_ENVIRONMENT_URL" />
+    <ContainerEnvironmentVariable Include="AZURE_CLIENT_ID" />
+    <ContainerEnvironmentVariable Include="AZURE_TENANT_ID" />
+    <ContainerEnvironmentVariable Include="AZURE_CLIENT_SECRET" />
+    <ContainerEnvironmentVariable Include="DOCKER_CONTAINER" Value="true" />
+  </ItemGroup>
+  <PropertyGroup>
+    <EnableSdkContainerSupport>True</EnableSdkContainerSupport>
+    <ContainerRepository>rajyraman/mcp-stdio-dataverse</ContainerRepository>
+    <ContainerLicenseExpression>MIT</ContainerLicenseExpression>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
+    <RuntimeIdentifiers>linux-x64;linux-arm64</RuntimeIdentifiers>
+    <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
+    <IsPublishable>True</IsPublishable>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/runtime:9.0</ContainerBaseImage>
+    <ContainerRuntimeIdentifier>linux-x64</ContainerRuntimeIdentifier>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageTags>dataverse,mcp</PackageTags>
+    <RepositoryUrl>https://github.com/rajyraman/mcp-dataverse</RepositoryUrl>
+    <Copyright>
+    </Copyright>
+    <Description>MCP Server to query Dataverse using SQL.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mcp.Dataverse.Core\Mcp.Dataverse.Core.csproj" />
+  </ItemGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="powershell -Command &quot;$processes = Get-Process -Name \&quot;mcp.dataverse.stdio\&quot; -ErrorAction SilentlyContinue; if ($processes) { $processes | Stop-Process -Force }&quot;" IgnoreExitCode="true" />
+  </Target>
 </Project>

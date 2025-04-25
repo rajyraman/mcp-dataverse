@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerPlatform.Dataverse.Client;
+using ModelContextProtocol;
 using System;
 using System.Runtime.Caching;
 namespace Mcp.Dataverse.Core.Extensions;
@@ -26,33 +27,33 @@ public static class BuilderExtensions
 
         if (string.IsNullOrEmpty(environmentUrl))
         {
-            throw new InvalidOperationException("DATAVERSE_ENVIRONMENT_URL environment variable is not set.");
+            throw new McpException("DATAVERSE_ENVIRONMENT_URL environment variable is not set.", McpErrorCode.InvalidRequest);
         }
         var credentialOptions = new DefaultAzureCredentialOptions
         {
             ExcludeWorkloadIdentityCredential = true,
             ExcludeManagedIdentityCredential = true,
             ExcludeEnvironmentCredential = true,
-            ExcludeAzurePowerShellCredential = true,
-            ExcludeAzureDeveloperCliCredential = true,
             ExcludeVisualStudioCredential = true
         };
         if (isContainer)
         {
             credentialOptions.ExcludeInteractiveBrowserCredential = true;
-            credentialOptions.ExcludeAzureCliCredential = true;
             credentialOptions.ExcludeEnvironmentCredential = false;
         }
 
         builder.Services.AddSingleton(serviceProvider =>
         {
-            var dataverseClient = AzAuth.CreateServiceClient(
-                environmentUrl,
-                credentialOptions: credentialOptions
-                //logger: logger
-            );
-            dataverseClient.EnableAffinityCookie = false;
-            return dataverseClient;
+            try
+            {
+                var dataverseClient = AzAuth.CreateServiceClient(environmentUrl, credentialOptions: credentialOptions);
+                dataverseClient.EnableAffinityCookie = false;
+                return dataverseClient;
+            }
+            catch (Exception ex)
+            {
+                throw new McpException("ServiceClient Connection exception", ex, McpErrorCode.InternalError);
+            }
         });
 
         builder.Services.AddSingleton(serviceProvider =>
