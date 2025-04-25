@@ -32,7 +32,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Publish to Docker Hub
-      run: dotnet publish ./src/Mcp.Dataverse.Stdio -c Release --os linux --arch x64 /p:PublishProfile=DefaultContainer /p:ContainerImageName=${{ secrets.DOCKER_USERNAME }}/mcp-stdio-dataverse /p:ContainerImageTag=latest
+      run: dotnet publish ./src/Mcp.Dataverse.Stdio -c Release --os linux --arch x64 /p:ContainerImageName=${{ secrets.DOCKER_USERNAME }}/mcp-stdio-dataverse /p:ContainerImageTag=latest
       env:
         DOCKER_REGISTRY: docker.io
 
