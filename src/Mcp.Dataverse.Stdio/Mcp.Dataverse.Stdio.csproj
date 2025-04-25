@@ -25,6 +25,7 @@
   </ItemGroup>
   <PropertyGroup>
     <EnableSdkContainerSupport>True</EnableSdkContainerSupport>
+	<ContainerRegistry>docker.io</ContainerRegistry>
     <ContainerRepository>rajyraman/mcp-stdio-dataverse</ContainerRepository>
     <ContainerLicenseExpression>MIT</ContainerLicenseExpression>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
