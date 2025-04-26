@@ -15,7 +15,7 @@
 	},
 	"runArgs": [
 		"--env-file",
-		".devcontainer/dataverse-nosecrets.env"
+		".devcontainer/nuget-tool/dataverse-nosecrets.env"
 	],
 	"customizations": {
 		"vscode": {
