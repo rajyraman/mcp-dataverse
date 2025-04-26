@@ -483,3 +483,5 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+!/.devcontainer/nuget-tool/dataverse-nosecrets.env
