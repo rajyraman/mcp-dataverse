@@ -121,3 +121,9 @@ On Claude Desktop, you can clicking the "Attach from MCP" button.
 ## Example 5 - Running SQL directly with #ExecuteSQL tool
 
 ![Direct SQL](./images/direct-sql.jpg)
+
+## Example 6 - Only SELECT statements are allowed
+
+This also means that Common Table Expressions are not allowed. This will change if and when GitHub Copilot supports Sampling in MCP spec.
+
+![Only SELECT statements allowed](./images/block-update.jpg)
