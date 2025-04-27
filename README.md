@@ -68,6 +68,8 @@ DATAVERSE_ENVIRONMENT_URL=https://abc.crm6.dynamics.com
 DOCKER_CONTAINER=true
 ```
 
+If you are using this MCP Server on a new folder (not in the cloned repo), make sure that you are have [.github/copilot-instructions.md](.github/copilot-instructions.md) setup. If you already have a different copilot-instructions.md file, you can also create this as a custom prompt under .github/prompts folder e.g. [dataverse.main.prompt.md](.github/prompts/dataverse.main.prompt.md) and use it in the chat.
+
 # Sample MCP Config
 
 ```json
