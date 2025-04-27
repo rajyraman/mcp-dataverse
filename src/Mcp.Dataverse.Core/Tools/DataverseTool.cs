@@ -107,7 +107,7 @@ public sealed class DataverseTool
     {
         if (!sqlQuery.TrimStart().StartsWith("SELECT", StringComparison.OrdinalIgnoreCase))
         {
-            throw new ArgumentException("Only SELECT statements are allowed.");
+            throw new McpException("Only SELECT statements are allowed.");
         }
         var result = await ExecuteSQL(sqlQuery, sql4cdsConnection);
         return result;
@@ -123,7 +123,7 @@ public sealed class DataverseTool
     }
     private static async Task<string> ExecuteSQL(string query, Sql4CdsConnection sql4cdsConnection)
     {
-        using Sql4CdsCommand cmd = sql4cdsConnection.CreateCommand() ;
+        using Sql4CdsCommand cmd = sql4cdsConnection.CreateCommand();
         cmd.CommandText = query;
         var table = new List<Dictionary<string, object>>();
         try
