@@ -92,3 +92,7 @@ On Claude Desktop, you can clicking the "Attach from MCP" button.
 ## Example 4 - Plugins registered on contact and account 🔌
 
 ![Plugin Steps](./images/plugin-steps.jpg)
+
+## Example 5 - Running SQL directly with #ExecuteSQL tool
+
+![Direct SQL](./images/direct-sql.jpg)
