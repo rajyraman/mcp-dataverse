@@ -5,7 +5,7 @@
     <RootNamespace>Mcp.Dataverse.Stdio</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyVersion>$([System.DateTime]::UtcNow.ToString('yyyy.MM.dd.1'))</AssemblyVersion>
+    <AssemblyVersion>$([System.DateTime]::UtcNow.ToString('yyyy.MM.dd.2'))</AssemblyVersion>
     <Title>mcp-studio-dataverse</Title>
     <Authors>Natraj Yegnaraman</Authors>
     <PackageProjectUrl>https://github.com/rajyraman/mcp-dataverse</PackageProjectUrl>
