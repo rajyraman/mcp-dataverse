@@ -68,6 +68,22 @@ DATAVERSE_ENVIRONMENT_URL=https://abc.crm6.dynamics.com
 DOCKER_CONTAINER=true
 ```
 
+# Sample MCP Config
+
+```json
+{
+    "servers": {
+        "dataverse-mcp-dotnet-tool": {
+            "type": "stdio",
+            "command": "mcp-dataverse",
+            "env": {
+                "DATAVERSE_ENVIRONMENT_URL": "https://abc.crm6.dynamics.com"
+            }
+        }
+    }
+}
+```
+
 # Configuration for GitHub Codespaces
 
 When you create you Codespace make sure you select the [devcontainer.json](.devcontainer/nuget-tool/devcontainer.json) inside the [nuget-tool](.devcontainer/nuget-tool/) folder. You should also change the [dataverse-nosecrets.env](.devcontainer/nuget-tool/dataverse-nosecrets.env) so that the DATAVERSE_ENVIRONMENT_URL environment variable is pointing to the right environment URL.
