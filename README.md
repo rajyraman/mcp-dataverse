@@ -78,9 +78,7 @@ When you create you Codespace make sure you select the [devcontainer.json](.devc
 
 # Prompts
 
-If you are using GitHub Copilot, use the prompt [dataverse.main.prompt.md](.github/prompts/dataverse.main.prompt.md) with your Agent requests.
-
-![Select Prompt](/images/select-prompt.jpg)
+If you are using GitHub Copilot, [copilot-instructions.md](.github/copilot-instructions.md) file should automatically be used.
 
 On Claude Desktop, you can clicking the "Attach from MCP" button.
 
