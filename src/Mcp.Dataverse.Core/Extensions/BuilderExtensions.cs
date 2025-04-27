@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.PowerPlatform.Dataverse.Client;
+using Microsoft.PowerPlatform.Dataverse.Client.Model;
 using ModelContextProtocol;
 using System;
 using System.Runtime.Caching;
@@ -33,12 +34,11 @@ public static class BuilderExtensions
         {
             ExcludeWorkloadIdentityCredential = true,
             ExcludeManagedIdentityCredential = true,
-            ExcludeEnvironmentCredential = true,
-            ExcludeVisualStudioCredential = true
+            ExcludeEnvironmentCredential = true
         };
+
         if (isContainer)
         {
-            credentialOptions.ExcludeInteractiveBrowserCredential = true;
             credentialOptions.ExcludeEnvironmentCredential = false;
         }
 
@@ -46,13 +46,16 @@ public static class BuilderExtensions
         {
             try
             {
-                var dataverseClient = AzAuth.CreateServiceClient(environmentUrl, credentialOptions: credentialOptions);
-                dataverseClient.EnableAffinityCookie = false;
+                var dataverseClient = AzAuth.CreateServiceClient(
+                    new ConnectionOptions { ServiceUri = new Uri(environmentUrl) }, 
+                    credentialOptions: credentialOptions, 
+                    configurationOptions: new ConfigurationOptions { EnableAffinityCookie = false }
+                );
                 return dataverseClient;
             }
             catch (Exception ex)
             {
-                throw new McpException("ServiceClient Connection exception", ex, McpErrorCode.InternalError);
+                throw new McpException(ex.Message, ex.InnerException);
             }
         });
 
