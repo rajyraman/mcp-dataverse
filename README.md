@@ -32,7 +32,7 @@ Below is the recommendation based on the where you plan to use this MCP
 | In                | Client         | Recommendation |
 | ----------------- | -------------- | -------------- |
 | Windows           | GitHub Copilot | Docker/Podman |
-| Windows           | Claude Desktop, GitHub Copilot | dotnet tool |
+| Windows           | Claude Desktop | dotnet tool |
 | MacOS             | Claude Desktop, GitHub Copilot | dotnet tool |
 | Linux             | Claude Desktop, GitHub Copilot | dotnet tool |
 | GitHub Codespaces | GitHub Copilot | dotnet tool |
