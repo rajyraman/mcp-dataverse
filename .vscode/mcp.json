@@ -1,24 +1,24 @@
 {
     "servers": {
-        "dataverse-mcp-docker": {
-            "type": "stdio",
-            "command": "docker",
-            "args": [
-                "run",
-                "--env-file",
-                "${workspaceFolder}/.env",
-                "-i",
-                "--rm",
-                "rajyraman/mcp-stdio-dataverse"
-            ]
-        },
-        // "dataverse-mcp-dotnet-tool": {
+        // "dataverse-mcp-docker": {
         //     "type": "stdio",
-        //     "command": "mcp-dataverse",
-        //     "env": {
-        //         "DATAVERSE_ENVIRONMENT_URL": "https://dreamingincrmdev.crm6.dynamics.com"
-        //     }
+        //     "command": "docker",
+        //     "args": [
+        //         "run",
+        //         "--env-file",
+        //         "${workspaceFolder}/.env",
+        //         "-i",
+        //         "--rm",
+        //         "rajyraman/mcp-stdio-dataverse"
+        //     ]
         // },
+        "dataverse-mcp-dotnet-tool": {
+            "type": "stdio",
+            "command": "mcp-dataverse",
+            "env": {
+                "DATAVERSE_ENVIRONMENT_URL": "https://dreamingincrmdev.crm6.dynamics.com"
+            }
+        },
         // "dataverse-mcp-dev-container": {
         //     "type": "stdio",
         //     "command": "devcontainer",

@@ -29,13 +29,13 @@ You can click the buttons above to get the MCP Server config settings. You have 
 
 Below is the recommendation based on the where you plan to use this MCP
 
-| In                | Client         | Recommendation |
-| ----------------- | -------------- | -------------- |
-| Windows           | GitHub Copilot | Docker/Podman |
-| Windows           | Claude Desktop | dotnet tool |
-| MacOS             | Claude Desktop, GitHub Copilot | dotnet tool |
-| Linux             | Claude Desktop, GitHub Copilot | dotnet tool |
-| GitHub Codespaces | GitHub Copilot | dotnet tool |
+| In                | Client                         | Recommendation                                                       |
+| ----------------- | ------------------------------ | -------------------------------------------------------------------- |
+| Windows           | GitHub Copilot                 | dotnet tool. Use Docker/Podman as fallback, if you have auth issues. |
+| Windows           | Claude Desktop                 | dotnet tool                                                          |
+| MacOS             | Claude Desktop, GitHub Copilot | dotnet tool                                                          |
+| Linux             | Claude Desktop, GitHub Copilot | dotnet tool                                                          |
+| GitHub Codespaces | GitHub Copilot                 | dotnet tool                                                          |
 
 Since this MCP server is built with [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk), it is distributed via nuget as a dotnet tool. dotnet 9.0 SDK can be installed in all major OSes.
 
